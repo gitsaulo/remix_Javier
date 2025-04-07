@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id String @id @default(cuid())
+  name String
+  users User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  firstName String
+  lastName String
+
+  roleId String
+  role Role @relation(fields: [roleId], references: [id])
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pantryShelves PantryShelf[]
+  pantryItems PantryItem[]
+  recipes Recipe[]
+}
+
+model PantryShelf {
+  id String @id @default(cuid())
+  name String
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  items PantryItem[]
+}
+
+model PantryItem {
+  id String @id @default(cuid())
+  name String 
+  shelfId String
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shelf PantryShelf @relation(fields:[shelfId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id String @id @default(cuid())
+  name String
+  thumb String 
+  description String
+  recipes Recipe[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Recipe {
+  id String @id @default(cuid())
+  name String
+  instructions String
+  totalTime String
+  imageUrl String
+  userId String
+  mealPlanMultiplier Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  categories Category[]
+  ingredients Ingredient[]
+}
+
+model Ingredient {
+  id String @id @default(cuid())
+  name String
+  amount String
+  recipeId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
