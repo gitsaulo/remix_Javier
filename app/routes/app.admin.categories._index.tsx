@@ -1,5 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
-import { DiscoverGrid, DiscoverListItem } from "~/components/discover";
+import { CategoryGrid } from "~/components/category";
 import db from "~/db.server";
 
 export async function loader() {
@@ -26,7 +26,7 @@ export default function AdminCategories() {
   return (
     <div className="h-[calc(100vh-1rem)] p-4 m-[-1rem] overflow-auto">
       <h1 className="text-2xl font-bold mb-4">CATEGORIES</h1>
-      <DiscoverGrid>
+      <CategoryGrid>
         {data.categories.map((category) => (
           <div>
           <a href={"/app/admin/categories/"+category.name}>
@@ -39,7 +39,7 @@ export default function AdminCategories() {
           </a>
         </div>
         ))}
-      </DiscoverGrid>
+      </CategoryGrid>
     </div>
   );  
 }
